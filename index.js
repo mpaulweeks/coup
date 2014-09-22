@@ -32,12 +32,12 @@ server.listen(port)
 console.log("http server listening on %d", port)
 var wss = new WebSocketServer({server: server})
 wss.broadcast = function(key, data) {
-  for (var i in this.clients)
-  	console.log(i);
-  	var ws = this.clients[i];
-    if(key === ws.key){
-    	ws.send(data);
-    }
+	for (var i in this.clients) {
+	  	var ws = this.clients[i];
+	    if(key === ws.key){
+	    	ws.send(data);
+	    }
+	}
 };
 console.log("websocket server created")
 var tests = [];
@@ -54,7 +54,6 @@ wss.on("connection", function(ws) {
 		var test_number = message.test_number;
 		tests.push(test_number);
 		ws.key = test_number;
-		// ws.key = parseInt(test_number) % 2;
 		wss.broadcast(ws.key, String(tests));
 	})
 });
