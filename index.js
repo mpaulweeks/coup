@@ -27,6 +27,38 @@ var get_by_id = function(arr, id){
 	return result;
 }
 
+var server = http.createServer(app)
+server.listen(port)
+console.log("http server listening on %d", port)
+var wss = new WebSocketServer({server: server})
+wss.broadcast = function(key, data) {
+  for (var i in this.clients)
+  	console.log(i);
+  	var ws = this.clients[i];
+    if(key === ws.key){
+    	ws.send(data);
+    }
+};
+console.log("websocket server created")
+var tests = [];
+wss.on("connection", function(ws) {
+	console.log("websocket connection open");
+
+	ws.on("close", function() {
+		console.log("websocket connection close");
+	})
+
+	ws.on('message', function(data){
+		console.log("websocket hit");
+		var message = JSON.parse(data);
+		var test_number = message.test_number;
+		tests.push(test_number);
+		ws.key = test_number;
+		// ws.key = parseInt(test_number) % 2;
+		wss.broadcast(ws.key, String(tests));
+	})
+});
+
 //GETS
 app.get('/', function(req, res){
 	var data = {
@@ -41,11 +73,15 @@ app.get('/signin', function(req, res) {
 
 app.get('/lobby/:lobby_id', function(req, res){
 	var lobby_id = req.params.lobby_id;
+	var lobby = get_by_id(lobbies, lobby_id);
 	var data = {
-		lobby: get_by_id(lobbies, lobby_id),
+		lobby: lobby,
 	}
 	res.send(data.lobby.name); //needs a jade
-	
+	if(!lobby.ws){
+		var serv = http.createServer();
+		serv.listen(8080, '')
+	}
 });
 
 
@@ -73,23 +109,9 @@ app.post('/lobby/create', function(req, res) {
 	});
 });
 
-
-var server = http.createServer(app)
-server.listen(port)
-
-console.log("http server listening on %d", port)
-
-var wss = new WebSocketServer({server: server})
-console.log("websocket server created")
-
-wss.on("connection", function(ws) {
-	console.log("websocket connection open");
-
-	ws.on("close", function() {
-		console.log("websocket connection close");
-	})
-
-	ws.on('message', function(message){
-		console.log("websocket hit");
-	})
-});
+app.get('/test/:num', function(req, res){
+	var num = req.params.num;
+	res.send(jade.compileFile('test.jade')({
+		test_number: num,
+	}));
+})
