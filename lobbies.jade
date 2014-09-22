@@ -1,0 +1,8 @@
+h3 Lobby
+p='Welcome, ' + user.name
+p Choose from an existing lobby or create
+for lobby in lobbies
+	p
+		a.lobby(href=('/lobby/'+lobby.id), id=lobby.id)=lobby.name
+input(type='text')#lobby-name
+button#create-lobby Create lobby
