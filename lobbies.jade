@@ -1,8 +1,33 @@
-h3 Lobby
-p='Welcome, ' + user.name
-p Choose from an existing lobby or create
-for lobby in lobbies
-	p
-		a.lobby(href=('/lobby/'+lobby.id), id=lobby.id)=lobby.name
-input(type='text')#lobby-name
-button#create-lobby Create lobby
+html
+	head
+		script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+		script(src='//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js')
+		script(src='/nav.js')
+		script(src='/redirect.js')
+	body
+		h1 COUP
+		h3 Lobby
+		p
+			| Welcome,
+			span#user-name
+		p Choose from an existing lobby or create
+		for lobby in lobbies
+			p
+				a.lobby(href=('/lobby/'+lobby.id), id=lobby.id)=lobby.name
+		input(type='text')#lobby-name
+		button#create-lobby Create lobby
+		script(type='text/javascript').
+			$(document).on('ready', function(){
+				$('#create-lobby').on('click', function(e){
+					var lobby_name = $('#lobby-name').val();
+					$.ajax({
+						url: '/lobby/create',
+						type: 'POST',
+						data: {
+							'lobby_name': lobby_name,
+						}
+					}).done(function(data){				
+						window.location.href = '/lobby/' + data.lobby_id;
+					});
+				});
+			});
