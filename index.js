@@ -81,7 +81,7 @@ app.get('/lobby/:lobby_id', function(req, res){
 		name = lobby.name,
 		players = lobby.players.json()
 	}
-	res.send(fn_game(lobby)); //needs a jade
+	res.send(fn_game(lobby));
 });
 
 function _create_user(res, user_name){
