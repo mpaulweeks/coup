@@ -14,6 +14,7 @@ var jade_dir = 'jade/';
 
 var fn_signin = jade.compileFile(jade_dir + 'signin.jade');
 var fn_lobbies = jade.compileFile(jade_dir + 'lobbies.jade');
+var fn_game = jade.compileFile(jade_dir + 'game.jade');
 
 var users = []
 var lobbies = []
@@ -51,7 +52,7 @@ wss.on("connection", function(ws) {
 	})
 
 	ws.on('message', function(data){
-		console.log("websocket hit");
+		console.log("websocket hit: " + data);
 		var message = JSON.parse(data);
 		var test_number = message.test_number;
 		tests.push(test_number);
@@ -76,13 +77,11 @@ app.get('/lobby/:lobby_id', function(req, res){
 	var lobby_id = req.params.lobby_id;
 	var lobby = get_by_id(lobbies, lobby_id);
 	var data = {
-		lobby: lobby,
+		id = lobby.id,
+		name = lobby.name,
+		players = lobby.players.json()
 	}
-	res.send(data.lobby.name); //needs a jade
-	if(!lobby.ws){
-		var serv = http.createServer();
-		serv.listen(8080, '')
-	}
+	res.send(fn_game(lobby)); //needs a jade
 });
 
 function _create_user(res, user_name){
@@ -121,7 +120,7 @@ app.post('/lobby/create', function(req, res) {
 	lobbies.push({
 		name: req.body.lobby_name,
 		id: lobby_id,
-		players: {},
+		players: players.Create(),
 	});
 	res.send({
 		lobby_id: lobby_id,

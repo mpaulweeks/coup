@@ -1,0 +1,24 @@
+html
+	head
+		script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
+		script(src='//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js')
+		script(src='/redirect.js')
+		script(src='/game.js')
+	body
+		input(type='hidden', value=id)#lobby-id
+		h1 COUP
+		h3=name
+		p Players
+		table
+			tr
+				th name
+				th cash
+				th num cards
+				th discard
+			for p in players
+				tr
+					th=p.user.name
+					th(id=('cash-' + p.user.id))
+					th(id=('cards-' + p.user.id))
+					th(id=('discard-' + p.user.id))
+		div#messages
