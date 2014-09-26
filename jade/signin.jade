@@ -19,8 +19,8 @@ html
 							'user_name': user_name,
 						}
 					}).done(function(data){
-						$.cookie("user_id", data.user_id, { expires : 1 });
-						$.cookie("user_name", user_name, { expires : 1 });
+						$.cookie("user_id", data.user_id, { expires: 1 });
+						$.cookie("user_name", data.user_name, { expires: 1 });
 						window.location.href = '/'
 					});
 				});

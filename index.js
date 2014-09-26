@@ -8,10 +8,12 @@ var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
 
-app.use(express.static(__dirname + "/"))
+app.use(express.static(__dirname + "/public"))
 
-var fn_signin = jade.compileFile('signin.jade');
-var fn_lobbies = jade.compileFile('lobbies.jade');
+var jade_dir = 'jade/';
+
+var fn_signin = jade.compileFile(jade_dir + 'signin.jade');
+var fn_lobbies = jade.compileFile(jade_dir + 'lobbies.jade');
 
 var users = []
 var lobbies = []
@@ -83,17 +85,35 @@ app.get('/lobby/:lobby_id', function(req, res){
 	}
 });
 
-
-//POSTS
-app.post('/user/create', function(req, res) {
+function _create_user(res, user_name){
 	var user_id = id++;
 	users.push({
-		name: req.body.user_name,
+		name: user_name,
 		id: user_id,
 	});
 	res.send({
 		user_id: user_id,
+		user_name: user_name,
 	});
+}
+
+//POSTS
+app.post('/user/create', function(req, res) {
+	var user_name = req.body.user_name;
+	_create_user(res, user_name);
+});
+
+app.post('/user/assert', function(req, res) {
+	var user = get_by_id(users, req.body.user_id);
+	var user_name = req.body.user_name;
+	if(!user || user.name != user_name){
+		_create_user(res, user_name);
+	} else {
+		res.send({
+			user_id: user.id,
+			user_name: user.name,
+		});
+	}
 });
 
 app.post('/lobby/create', function(req, res) {
@@ -110,7 +130,7 @@ app.post('/lobby/create', function(req, res) {
 
 app.get('/test/:num', function(req, res){
 	var num = req.params.num;
-	res.send(jade.compileFile('test.jade')({
+	res.send(jade.compileFile(jade_dir + 'test.jade')({
 		test_number: num,
 	}));
 })
