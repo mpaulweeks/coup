@@ -3,6 +3,7 @@ var http = require("http")
 var express = require("express")
 var app = express()
 var jade = require('jade')
+var _game = require('./modules/game.js');
 var port = process.env.PORT || 5000
 var bodyParser = require('body-parser')
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
@@ -79,7 +80,7 @@ app.get('/lobby/:lobby_id', function(req, res){
 	var data = {
 		id = lobby.id,
 		name = lobby.name,
-		players = lobby.players.json()
+		game = lobby.game.json()
 	}
 	res.send(fn_game(lobby));
 });
@@ -120,7 +121,7 @@ app.post('/lobby/create', function(req, res) {
 	lobbies.push({
 		name: req.body.lobby_name,
 		id: lobby_id,
-		players: players.Create(),
+		game: _game.get(),
 	});
 	res.send({
 		lobby_id: lobby_id,
