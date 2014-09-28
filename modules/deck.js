@@ -10,7 +10,7 @@ function getCards(){
 	return out;
 }
 
-module.exports.get = function(){
+module.exports.create = function(){
 
 	var deck = getCards();
 

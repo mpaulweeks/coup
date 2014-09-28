@@ -18,7 +18,7 @@ var fn_lobbies = jade.compileFile(jade_dir + 'lobbies.jade');
 var fn_game = jade.compileFile(jade_dir + 'game.jade');
 
 var users = []
-var lobbies = []
+var games = []
 var id = 0
 
 var get_by_id = function(arr, id){
@@ -31,20 +31,24 @@ var get_by_id = function(arr, id){
 	return result;
 }
 
+function interpret(ws, message){
+
+}
+
 var server = http.createServer(app)
 server.listen(port)
 console.log("http server listening on %d", port)
 var wss = new WebSocketServer({server: server})
-wss.broadcast = function(key, data) {
+wss.broadcast = function(game_id) {
+	var data = get_by_id(lobbies, game_id).game.getJSON();
 	for (var i in this.clients) {
 	  	var ws = this.clients[i];
-	    if(key === ws.key){
+	    if(game_id === ws.game_id){
 	    	ws.send(data);
 	    }
 	}
 };
 console.log("websocket server created")
-var tests = [];
 wss.on("connection", function(ws) {
 	console.log("websocket connection open");
 
@@ -55,17 +59,24 @@ wss.on("connection", function(ws) {
 	ws.on('message', function(data){
 		console.log("websocket hit: " + data);
 		var message = JSON.parse(data);
-		var test_number = message.test_number;
-		tests.push(test_number);
-		ws.key = test_number;
-		wss.broadcast(ws.key, String(tests));
+		if(message.header == 'start'){
+			ws.game_id = message.game_id;
+			ws.user_id = message.user_id;
+			var game = get_by_id(lobbies, ws.game_id).game;
+			var user = get_by_id(users, ws.user_id);
+			game.addPlayer(user);
+		}
+		if(message.header == 'action'){
+			interpet(ws, message);
+		}
+		wss.broadcast(ws.game_id);
 	})
 });
 
 //GETS
 app.get('/', function(req, res){
 	var data = {
-		lobbies: lobbies,
+		games: games,
 	}
 	res.send(fn_lobbies(data));
 })
@@ -74,15 +85,14 @@ app.get('/signin', function(req, res) {
 	res.send(fn_signin());
 });
 
-app.get('/lobby/:lobby_id', function(req, res){
-	var lobby_id = req.params.lobby_id;
-	var lobby = get_by_id(lobbies, lobby_id);
+app.get('/games/:game_id', function(req, res){
+	var game_id = req.params.game_id;
+	var game = get_by_id(games, game_id);
 	var data = {
-		id = lobby.id,
-		name = lobby.name,
-		game = lobby.game.json()
+		id = game.id,
+		name = game.name,
 	}
-	res.send(fn_game(lobby));
+	res.send(fn_game(game));
 });
 
 function _create_user(res, user_name){
@@ -116,21 +126,14 @@ app.post('/user/assert', function(req, res) {
 	}
 });
 
-app.post('/lobby/create', function(req, res) {
-	var lobby_id = id++;
-	lobbies.push({
-		name: req.body.lobby_name,
-		id: lobby_id,
-		game: _game.get(),
+app.post('/game/create', function(req, res) {
+	var game_id = id++;
+	games.push({
+		name: req.body.game_name,
+		id: game_id,
+		game: _game.create(),
 	});
 	res.send({
-		lobby_id: lobby_id,
+		game_id: game_id,
 	});
 });
-
-app.get('/test/:num', function(req, res){
-	var num = req.params.num;
-	res.send(jade.compileFile(jade_dir + 'test.jade')({
-		test_number: num,
-	}));
-})
