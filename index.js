@@ -163,3 +163,19 @@ app.post('/game/create', function(req, res) {
 		game_id: game_id,
 	});
 });
+
+//for debug
+function debug(){
+	var user_id = id++;
+	users.push({
+		name: 'Paul',
+		id: user_id,
+	});
+	var game_id = id++;
+	games.push({
+		name: 'farge',
+		id: game_id,
+		game: _game.create(),
+	});
+}
+debug();

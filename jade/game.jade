@@ -4,35 +4,87 @@ html
 		script(src='//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js')
 		script(src='/redirect.js')
 		script(src='/game/main.js')
+		link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
+		link(rel='stylesheet', href='/style.css')
 	body
-		input(type='hidden', value=id)#game-id
-		h1 COUP
-		h3=name
-		h3 Players
-		table
-			thead
-				tr
-					th name
-					th cash
-					th num cards
-					th discard
-			tbody#players
-		h3 Actions
-		div
-			button.cash-add(value='-7') -7
-			button.cash-add(value='-3') -3
-			button.cash-add(value='-1') -1
-			button.cash-add(value='1') +1
-			button.cash-add(value='2') +2
-			button.cash-add(value='3') +3
-		button#draw Draw
-		h3 Hand
-		div#hand
-		h3 Cheatsheet
-		div
-			| this will be the cheatsheet
-		h3 Log
-		div#log
+		div.container
+			input(type='hidden', value=id)#game-id
+			h1 
+				| COUP
+				=name
+			h3 Players
+			table.table
+				thead
+					tr
+						th name
+						th cash
+						th num cards
+						th discard
+				tbody#players
+			h3 Hand
+			div.row
+				div.col-md-2
+					button.btn.btn-default#draw Draw
+				div.col-md-10
+					div#hand
+			h3 Cash
+			button.btn.btn-default.cash-add(value='-7') -7
+			button.btn.btn-default.cash-add(value='-3') -3
+			button.btn.btn-default.cash-add(value='-1') -1
+			button.btn.btn-default.cash-add(value='1') +1
+			button.btn.btn-default.cash-add(value='2') +2
+			button.btn.btn-default.cash-add(value='3') +3
+			h3 Cheatsheet
+			table.table
+				thead
+					tr
+						th Character
+						th Action
+						th Effect
+						th Counter
+				tbody
+					tr
+						td
+						td Income
+						td +1
+						td
+					tr
+						td
+						td Foreign Aid
+						td +2
+						td
+					tr
+						td
+						td Coup
+						td -7, kill
+						td
+					tr#card-type-1.special-action
+						td Ambassador
+						td Exchange
+						td Draw 2, then return 2
+						td Block: Steal
+					tr#card-type-2.special-action
+						td Assassin
+						td Assassinate
+						td -3, kill
+						td
+					tr#card-type-3.special-action
+						td Captain
+						td Steal
+						td +2, someone else -2
+						td Block: Steal
+					tr#card-type-4.special-action
+						td Contessa
+						td 
+						td 
+						td Block: Assassinate
+					tr#card-type-5.special-action
+						td Duke
+						td Tax
+						td +3
+						td Block: Foreign Aid
+			h3 Log
+			div#log
 
 		script(type='text/javascript').
 			$(document).on('ready', function(){

@@ -23,16 +23,20 @@ function wrap(tag, raw){
 }
 
 function updateHand(hand){
+	$('.has-card').removeClass('has-card');
+
 	var out = 'Empty :(';
 	if(hand && hand.length > 0){
 		var names = [];
 		hand.forEach(function (card){
 			names.push(card.name);
+			$('#card-type-' + card.type).addClass('has-card');
 		});
 		names.sort();
 		out = names.join(', ');
 	}
 	$('#hand').html(out);
+
 }
 
 function discard(dis){
