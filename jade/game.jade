@@ -5,7 +5,7 @@ html
 		script(src='/redirect.js')
 		script(src='/game.js')
 	body
-		input(type='hidden', value=id)#lobby-id
+		input(type='hidden', value=id)#game-id
 		h1 COUP
 		h3=name
 		p Players
@@ -15,10 +15,16 @@ html
 				th cash
 				th num cards
 				th discard
-			for p in players
-				tr
-					th=p.user.name
-					th(id=('cash-' + p.user.id))
-					th(id=('cards-' + p.user.id))
-					th(id=('discard-' + p.user.id))
-		div#messages
+			div#players
+		div
+			button.cash-add(value='-7') -7
+			button.cash-add(value='-3') -3
+			button.cash-add(value='-1') -1
+			button.cash-add(value='1') +1
+			button.cash-add(value='2') +2
+			button.cash-add(value='3') +3
+		button#draw Draw
+		div#hand
+		div
+			| this will be the cheatsheet
+		div#log

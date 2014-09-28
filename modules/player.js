@@ -5,7 +5,7 @@ module.exports.create = function(user, deck){
 	var discard = [];
 
 	var addCash = function(amount){
-		cash += amount;
+		cash += Number(amount);
 	};
 
 	var draw = function(){
@@ -29,6 +29,7 @@ module.exports.create = function(user, deck){
 			if(card.type == card_type){
 				hand.splice(i, 1);
 				discard.push(card);
+				return card;
 			}
 		}
 	}

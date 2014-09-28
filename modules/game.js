@@ -3,8 +3,8 @@ var _player = require('./player.js');
 
 module.exports.create = function(){
 	var deck = _deck.create();
-
 	var players = [];
+	var log = [];
 
 	var addPlayer = function(user){
 		var p = _player.create(user, deck);
@@ -22,10 +22,14 @@ module.exports.create = function(){
 	}
 
 	var getJSON = function(){
-		var out = []
+		var p_objs = []
 		players.forEach(function (p){
-			out.push(p.getObj());
+			p_objs.push(p.getObj());
 		});
+		var out = {
+			players: p_objs,
+			log: log,
+		}
 		return JSON.stringify(out);
 	};
 
@@ -33,5 +37,6 @@ module.exports.create = function(){
 		addPlayer: addPlayer,
 		getPlayer: getPlayer,
 		getJSON: getJSON,
+		log: log;
 	};
 }

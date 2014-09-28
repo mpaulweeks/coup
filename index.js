@@ -12,14 +12,26 @@ app.use( bodyParser.urlencoded() ); // to support URL-encoded bodies
 app.use(express.static(__dirname + "/public"))
 
 var jade_dir = 'jade/';
-
 var fn_signin = jade.compileFile(jade_dir + 'signin.jade');
-var fn_lobbies = jade.compileFile(jade_dir + 'lobbies.jade');
+var fn_lobby = jade.compileFile(jade_dir + 'lobby.jade');
 var fn_game = jade.compileFile(jade_dir + 'game.jade');
 
 var users = []
 var games = []
 var id = 0
+
+//Helpers
+function _create_user(res, user_name){
+	var user_id = id++;
+	users.push({
+		name: user_name,
+		id: user_id,
+	});
+	res.send({
+		user_id: user_id,
+		user_name: user_name,
+	});
+}
 
 var get_by_id = function(arr, id){
 	var result;
@@ -32,9 +44,36 @@ var get_by_id = function(arr, id){
 }
 
 function interpret(ws, message){
+	var game = get_by_id(lobbies, ws.game_id).game;	
+	var player = game.getPlayer(ws.user_id);
+	var log = player.user.name;
 
+	switch(message.action){
+		case 'cash':
+			var cash = player.addCash(message.value);
+			game.log.push(log + ' now has ' + cash);
+			break;
+		case 'draw':
+			player.draw();
+			game.log.push(log + ' drew a card');
+			break;
+		case 'returnToDeck':
+			player.returnToDeck(message.value);
+			game.log.push(log + ' returned a card to the deck');
+			break;
+		case 'revealAndReturn':
+			var card = player.returnToDeck(message.value);
+			game.log.push(log + ' revealed ' + card.name
+				+ ' and shuffled it into the deck');
+			break;
+		case 'discard':
+			var card = player.discard(message.value);
+			game.log.push(log + ' discarded ' + card.name);
+			break;
+	}
 }
 
+//Websocket
 var server = http.createServer(app)
 server.listen(port)
 console.log("http server listening on %d", port)
@@ -78,7 +117,7 @@ app.get('/', function(req, res){
 	var data = {
 		games: games,
 	}
-	res.send(fn_lobbies(data));
+	res.send(fn_lobby(data));
 })
 
 app.get('/signin', function(req, res) {
@@ -88,24 +127,8 @@ app.get('/signin', function(req, res) {
 app.get('/games/:game_id', function(req, res){
 	var game_id = req.params.game_id;
 	var game = get_by_id(games, game_id);
-	var data = {
-		id = game.id,
-		name = game.name,
-	}
 	res.send(fn_game(game));
 });
-
-function _create_user(res, user_name){
-	var user_id = id++;
-	users.push({
-		name: user_name,
-		id: user_id,
-	});
-	res.send({
-		user_id: user_id,
-		user_name: user_name,
-	});
-}
 
 //POSTS
 app.post('/user/create', function(req, res) {

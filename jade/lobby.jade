@@ -5,28 +5,28 @@ html
 		script(src='/redirect.js')
 	body
 		h1 COUP
-		h3 Lobby
+		h3 Game Lobby
 		p
 			| Welcome,
 			span#user-name
-		p Choose from an existing lobby or create
-		for lobby in lobbies
+		p Choose from an existing games or create
+		for game in games
 			p
-				a.lobby(href=('/lobby/'+lobby.id), id=lobby.id)=lobby.name
-		input(type='text')#lobby-name
-		button#create-lobby Create lobby
+				a.lobby(href=('/game/'+game.id), id=game.id)=game.name
+		input(type='text')#game-name
+		button#create-game Create game
 		script(type='text/javascript').
 			$(document).on('ready', function(){
-				$('#create-lobby').on('click', function(e){
-					var lobby_name = $('#lobby-name').val();
+				$('#create-game').on('click', function(e){
+					var game_name = $('#game-name').val();
 					$.ajax({
-						url: '/lobby/create',
+						url: '/game/create',
 						type: 'POST',
 						data: {
-							'lobby_name': lobby_name,
+							'game_name': game_name,
 						}
 					}).done(function(data){				
-						window.location.href = '/lobby/' + data.lobby_id;
+						window.location.href = '/lobby/' + data.game_id;
 					});
 				});
 			});
