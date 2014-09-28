@@ -185,12 +185,12 @@ app.post('/game/create', function(req, res) {
 function debug(){
 	var user_id = id++;
 	users.push({
-		name: 'Paul',
+		name: 'Demo_User',
 		id: user_id,
 	});
 	var game_id = id++;
 	games.push({
-		name: 'farge',
+		name: 'Demo_Lobby',
 		id: game_id,
 		game: _game.create(),
 	});

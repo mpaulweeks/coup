@@ -101,7 +101,7 @@ function setup_listeners(){
 		ws.send(jstr);
 	});
 
-	$(".btn").mouseup(function(){
+	$(".btn").on('click', function(){
 	    $(this).blur();
 	});
 }
