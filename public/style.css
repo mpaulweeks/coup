@@ -1,14 +1,32 @@
+.basic-action {
+	background-color: white;
+}
 .special-action {
 	background-color: #eeeeee;
 }
-.has-card {
+.has-card.card-type-1, .card-in-hand.card-type-1{
+	/* Ambassador */
+	background-color: rgb(247, 247, 136);
+}
+.has-card.card-type-2, .card-in-hand.card-type-2{
+	/* Assassin */
+	background-color: #444;
+	color: white;
+}
+.has-card.card-type-3, .card-in-hand.card-type-3{
+	/* Captain */
 	background-color: lightblue;
 }
-.card-in-hand{
-	width: 10em;
+.has-card.card-type-4, .card-in-hand.card-type-4{
+	/* Contessa */
+	background-color: lightcoral;
+}
+.has-card.card-type-5, .card-in-hand.card-type-5{
+	/* Duke */
+	background-color: plum;
 }
 .current-player{
-	background-color: lightblue;
+	background-color: rgb(167, 248, 170);
 }
 .card-in-hand{
 	font-size: 16pt;
@@ -21,4 +39,7 @@
 }
 .price-middle{
 	margin-left: 20px;
+}
+.admin{
+	color: red;
 }

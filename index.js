@@ -46,30 +46,47 @@ var get_by_id = function(arr, id){
 function interpret_action(ws, message){
 	var game = get_by_id(games, ws.game_id).game;	
 	var player = game.getPlayer(ws.user_id);
-	var log = player.user.name;
+	var name = player.user.name;
 
 	switch(message.action){
 		case 'cash':
 			var cash = player.addCash(message.value);
-			game.log.push(log + ' added (' + message.value
+			game.log.push(name + ' added (' + message.value
 				+ ') cash and now has ' + cash);
 			break;
 		case 'draw':
 			player.draw();
-			game.log.push(log + ' drew a card');
+			game.log.push(name + ' drew a card');
 			break;
 		case 'returnToDeck':
 			player.returnToDeck(message.value);
-			game.log.push(log + ' returned a card to the deck');
+			game.log.push(name + ' returned a card to the deck');
 			break;
 		case 'revealAndReturn':
 			var card = player.returnToDeck(message.value);
-			game.log.push(log + ' revealed ' + card.name
+			game.log.push(name + ' revealed ' + card.name
 				+ ' and shuffled it into the deck');
 			break;
 		case 'discard':
 			var card = player.discard(message.value);
-			game.log.push(log + ' discarded ' + card.name);
+			game.log.push(name + ' discarded ' + card.name);
+			break;
+		case 'reset':
+			if(game.isAdmin(player.user.id)){
+				game.reset();
+				game.log.push('--- GAME RESET BY ' + name + ' ---');
+			} else {
+				game.log.push(name + ' is trying to reset the game');	
+			}
+			break;
+		case 'kick':
+			if(game.isAdmin(player.user.id)){
+				game.kick(message.value);
+				game.log.push('--- ' + message.value
+					+ ' KICKED BY ' + name + ' ---');
+			} else {
+				game.log.push(name + ' is trying to kick');	
+			}
 			break;
 	}
 }

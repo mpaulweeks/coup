@@ -7,6 +7,7 @@ console.log('host: ' + host)
 var ws = new WebSocket(host);
 
 var user_id;
+var is_admin = false;
 
 ws.onopen = function (event) {
 	user_id = $.cookie('user_id');
@@ -39,9 +40,10 @@ function updateHand(hand){
 	if(hand && hand.length > 0){
 		out = ''
 		hand.forEach(function (card){
-			$('#card-type-' + card.type).addClass('has-card');
+			var typeClass = 'card-type-' + card.type;
+			$('.special-action.' + typeClass).addClass('has-card');
 			var c_html = 
-				wrap('div', card.name, 'card-in-hand col-md-6') +
+				wrap('div', card.name, 'card-in-hand col-md-6 ' + typeClass) +
 				wrap('div',
 					button('reveal', card.type, 'Reveal')
 				+ 	button('shuffle', card.type, 'Shuffle into deck')
@@ -102,6 +104,10 @@ function setup_listeners(){
 
 ws.onmessage = function (event) {
 	var data = JSON.parse(event.data);
+
+	console.log(data);
+
+	is_admin = data.admin_id == user_id;
 	
 	if(data.log && data.log.length > 0){
 		var log_out = '';
@@ -111,12 +117,14 @@ ws.onmessage = function (event) {
 		$('#log').html(log_out);			
 	}
 
+	var kicked = true;
 	var players_html;
 	data.players.forEach(function (p){
 		var classes = '';
 		if(p.user.id == user_id){
 			updateHand(p.hand);
 			classes = 'current-player';
+			kicked = false;
 		}
 		players_html += 
 			wrap('tr',
@@ -127,6 +135,17 @@ ws.onmessage = function (event) {
 				classes);
 	});
 	$('#players').html(players_html);
+	if(kicked){
+		window.alert("You've been kicked from the room");		
+		window.location.href = '/';
+		return;
+	}
+
+	if(is_admin){
+		$('.admin').show();
+		$('#title').hide();
+	}
+
 	setup_listeners();
 };
 
@@ -149,6 +168,30 @@ $('.cash-add').on('click', function(){
 	console.log(jstr);
 	ws.send(jstr);
 });
+
+//admin
+$('#reset').on('click', function(){
+	var jstr = JSON.stringify({
+		header: 'action',
+		action: 'reset',
+	});
+	console.log(jstr);
+	ws.send(jstr);	
+});
+
+$('#kick :button').on('click', function(){
+	console.log('kickin');
+	var value = $('#kick :input').val();
+	var jstr = JSON.stringify({
+		header: 'action',
+		action: 'kick',
+		value: value,
+	});
+	console.log(jstr);
+	ws.send(jstr);
+});
+
+$('.admin').hide();
 
 //end init func
 }
