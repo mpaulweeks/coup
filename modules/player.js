@@ -6,6 +6,7 @@ module.exports.create = function(user, deck){
 
 	var addCash = function(amount){
 		cash += Number(amount);
+		return cash;
 	};
 
 	var draw = function(){
@@ -36,6 +37,7 @@ module.exports.create = function(user, deck){
 
 	var getObj = function(){
 		return {
+			user: user,
 			cash: cash,
 			hand: hand,
 			discard: discard,
@@ -48,6 +50,7 @@ module.exports.create = function(user, deck){
 	draw();
 
 	return {
+		user: user,
 		addCash: addCash,
 		draw: draw,
 		returnToDeck: returnToDeck,

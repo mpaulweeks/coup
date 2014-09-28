@@ -1,4 +1,4 @@
-var _card = require('./cardjs');
+var _card = require('./card.js');
 
 function getCards(){
 	var out = [];

@@ -43,15 +43,16 @@ var get_by_id = function(arr, id){
 	return result;
 }
 
-function interpret(ws, message){
-	var game = get_by_id(lobbies, ws.game_id).game;	
+function interpret_action(ws, message){
+	var game = get_by_id(games, ws.game_id).game;	
 	var player = game.getPlayer(ws.user_id);
 	var log = player.user.name;
 
 	switch(message.action){
 		case 'cash':
 			var cash = player.addCash(message.value);
-			game.log.push(log + ' now has ' + cash);
+			game.log.push(log + ' added (' + message.value
+				+ ') coins and now has ' + cash);
 			break;
 		case 'draw':
 			player.draw();
@@ -79,7 +80,7 @@ server.listen(port)
 console.log("http server listening on %d", port)
 var wss = new WebSocketServer({server: server})
 wss.broadcast = function(game_id) {
-	var data = get_by_id(lobbies, game_id).game.getJSON();
+	var data = get_by_id(games, game_id).game.getJSON();
 	for (var i in this.clients) {
 	  	var ws = this.clients[i];
 	    if(game_id === ws.game_id){
@@ -99,14 +100,16 @@ wss.on("connection", function(ws) {
 		console.log("websocket hit: " + data);
 		var message = JSON.parse(data);
 		if(message.header == 'start'){
+			console.log('doing start');
 			ws.game_id = message.game_id;
 			ws.user_id = message.user_id;
-			var game = get_by_id(lobbies, ws.game_id).game;
+			var game = get_by_id(games, ws.game_id).game;
 			var user = get_by_id(users, ws.user_id);
 			game.addPlayer(user);
 		}
 		if(message.header == 'action'){
-			interpet(ws, message);
+			console.log('doing action');
+			interpret_action(ws, message);
 		}
 		wss.broadcast(ws.game_id);
 	})
@@ -124,7 +127,7 @@ app.get('/signin', function(req, res) {
 	res.send(fn_signin());
 });
 
-app.get('/games/:game_id', function(req, res){
+app.get('/game/:game_id', function(req, res){
 	var game_id = req.params.game_id;
 	var game = get_by_id(games, game_id);
 	res.send(fn_game(game));

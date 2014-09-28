@@ -3,19 +3,21 @@ html
 		script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
 		script(src='//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js')
 		script(src='/redirect.js')
-		script(src='/game.js')
+		script(src='/game/main.js')
 	body
 		input(type='hidden', value=id)#game-id
 		h1 COUP
 		h3=name
-		p Players
+		h3 Players
 		table
-			tr
-				th name
-				th cash
-				th num cards
-				th discard
-			div#players
+			thead
+				tr
+					th name
+					th cash
+					th num cards
+					th discard
+			tbody#players
+		h3 Actions
 		div
 			button.cash-add(value='-7') -7
 			button.cash-add(value='-3') -3
@@ -24,7 +26,15 @@ html
 			button.cash-add(value='2') +2
 			button.cash-add(value='3') +3
 		button#draw Draw
+		h3 Hand
 		div#hand
+		h3 Cheatsheet
 		div
 			| this will be the cheatsheet
+		h3 Log
 		div#log
+
+		script(type='text/javascript').
+			$(document).on('ready', function(){
+				coup();
+			});

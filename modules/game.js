@@ -7,8 +7,14 @@ module.exports.create = function(){
 	var log = [];
 
 	var addPlayer = function(user){
-		var p = _player.create(user, deck);
-		players.push(p);
+		var alreadyExists = false;
+		players.forEach(function (p){
+			alreadyExists = alreadyExists || p.user.id == user.id;
+		});
+		if(!alreadyExists){
+			var p = _player.create(user, deck);
+			players.push(p);
+		}
 	};
 
 	var getPlayer = function(user_id){
@@ -37,6 +43,6 @@ module.exports.create = function(){
 		addPlayer: addPlayer,
 		getPlayer: getPlayer,
 		getJSON: getJSON,
-		log: log;
+		log: log,
 	};
 }
