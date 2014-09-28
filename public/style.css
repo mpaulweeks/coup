@@ -7,3 +7,18 @@
 .card-in-hand{
 	width: 10em;
 }
+.current-player{
+	background-color: lightblue;
+}
+.card-in-hand{
+	font-size: 16pt;
+}
+.bordered-left{
+	border-left: 1px solid #eee;
+}
+.price-left{
+	margin-left: 9px;
+}
+.price-middle{
+	margin-left: 20px;
+}

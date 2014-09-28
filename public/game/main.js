@@ -18,8 +18,13 @@ ws.onopen = function (event) {
 	ws.send(jstr); 
 };
 
-function wrap(tag, raw){
-	return '<' + tag + '>' + raw + '</' + tag + '>';
+function wrap(tag, raw, classes){
+	var out = '<' + tag;
+	if(classes){
+		out += ' class="' + classes + '"';
+	}
+	out += '>' + raw + '</' + tag + '>';
+	return out;
 }
 
 function button(classes, value, text){
@@ -35,12 +40,13 @@ function updateHand(hand){
 		out = ''
 		hand.forEach(function (card){
 			$('#card-type-' + card.type).addClass('has-card');
-			var c_html = '<span class="card-in-hand">'
-				+ card.name + '</span>'
-				+ button('reveal', card.type, 'Reveal')
-				+ button('shuffle', card.type, 'Shuffle into deck')
-				+ button('discard', card.type, 'Discard');
-			out += wrap('li', c_html);
+			var c_html = 
+				wrap('div', card.name, 'card-in-hand col-md-6') +
+				wrap('div',
+					button('reveal', card.type, 'Reveal')
+				+ 	button('shuffle', card.type, 'Shuffle into deck')
+				+ 	button('discard', card.type, 'Discard'), 'col-md-6');
+			out += wrap('div', c_html, 'row');
 		});
 	}
 	$('#hand').html(out);
@@ -107,15 +113,18 @@ ws.onmessage = function (event) {
 
 	var players_html;
 	data.players.forEach(function (p){
+		var classes = '';
 		if(p.user.id == user_id){
 			updateHand(p.hand);
+			classes = 'current-player';
 		}
 		players_html += 
 			wrap('tr',
 				wrap('td', p.user.name)
 			+ 	wrap('td', p.cash)
 			+ 	wrap('td', p.hand.length)
-			+ 	discard(p.discardPile));
+			+ 	discard(p.discardPile),
+				classes);
 	});
 	$('#players').html(players_html);
 	setup_listeners();

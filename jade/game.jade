@@ -9,11 +9,8 @@ html
 	body
 		div.container
 			input(type='hidden', value=id)#game-id
-			h1 
-				| COUP
-				=name
 			h3 Players
-			table.table
+			table.table.table-condensed
 				thead
 					tr
 						th name
@@ -21,22 +18,24 @@ html
 						th num cards
 						th discard
 				tbody#players
-			h3 Hand
-			div.row
-				div.col-md-2
-					button.btn.btn-default#draw Draw
-				div.col-md-10
-					div#hand
-			h3 Cash
-			button.btn.btn-default.cash-add(value='-7') -7
-			button.btn.btn-default.cash-add(value='-3') -3
-			button.btn.btn-default.cash-add(value='-1') -1
-			button.btn.btn-default.cash-add(value='1') +1
-			button.btn.btn-default.cash-add(value='2') +2
-			button.btn.btn-default.cash-add(value='3') +3
+			div.row.text-center
+				div.col-md-4
+					h3 Cash
+					button.btn.btn-default.cash-add.price-left(value='-7') -7
+					button.btn.btn-default.cash-add(value='-3') -3
+					button.btn.btn-default.cash-add(value='-1') -1
+					button.btn.btn-default.cash-add.price-middle(value='1') +1
+					button.btn.btn-default.cash-add(value='2') +2
+					button.btn.btn-default.cash-add(value='3') +3
+				div.col-md-8.bordered-left
+					h3 Hand
+					div.col-md-2
+						button.btn.btn-default#draw Draw
+					div.col-md-10
+						div#hand
 			hr
 			h3 Reference
-			table.table
+			table.table.table-condensed
 				thead
 					tr
 						th Character
