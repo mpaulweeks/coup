@@ -52,7 +52,7 @@ function interpret_action(ws, message){
 		case 'cash':
 			var cash = player.addCash(message.value);
 			game.log.push(log + ' added (' + message.value
-				+ ') coins and now has ' + cash);
+				+ ') cash and now has ' + cash);
 			break;
 		case 'draw':
 			player.draw();

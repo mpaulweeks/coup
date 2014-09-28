@@ -2,7 +2,7 @@
 module.exports.create = function(user, deck){
 	var cash = 0;
 	var hand = [];
-	var discard = [];
+	var discardPile = [];
 
 	var addCash = function(amount){
 		cash += Number(amount);
@@ -29,7 +29,7 @@ module.exports.create = function(user, deck){
 			var card = hand[i];
 			if(card.type == card_type){
 				hand.splice(i, 1);
-				discard.push(card);
+				discardPile.push(card);
 				return card;
 			}
 		}
@@ -40,7 +40,7 @@ module.exports.create = function(user, deck){
 			user: user,
 			cash: cash,
 			hand: hand,
-			discard: discard,
+			discardPile: discardPile,
 		}
 	};
 

@@ -22,18 +22,26 @@ function wrap(tag, raw){
 	return '<' + tag + '>' + raw + '</' + tag + '>';
 }
 
+function button(classes, value, text){
+	return '<button class="btn btn-default ' + classes
+		 + '" value="' + value + '">' + text + '</button>';
+}
+
 function updateHand(hand){
 	$('.has-card').removeClass('has-card');
 
 	var out = 'Empty :(';
 	if(hand && hand.length > 0){
-		var names = [];
+		out = ''
 		hand.forEach(function (card){
-			names.push(card.name);
 			$('#card-type-' + card.type).addClass('has-card');
+			var c_html = '<span class="card-in-hand">'
+				+ card.name + '</span>'
+				+ button('reveal', card.type, 'Reveal')
+				+ button('shuffle', card.type, 'Shuffle into deck')
+				+ button('discard', card.type, 'Discard');
+			out += wrap('li', c_html);
 		});
-		names.sort();
-		out = names.join(', ');
 	}
 	$('#hand').html(out);
 
@@ -49,6 +57,41 @@ function discard(dis){
 		out = names.join(', ');
 	}
 	return wrap('td',out);
+}
+
+function setup_listeners(){
+	$('.reveal').on('click', function(){
+		var value = $(this).val();
+		var jstr = JSON.stringify({
+			header: 'action',
+			action: 'revealAndReturn',
+			value: value,
+		});
+		console.log(jstr);
+		ws.send(jstr);
+	});
+
+	$('.shuffle').on('click', function(){
+		var value = $(this).val();
+		var jstr = JSON.stringify({
+			header: 'action',
+			action: 'returnToDeck',
+			value: value,
+		});
+		console.log(jstr);
+		ws.send(jstr);
+	});
+
+	$('.discard').on('click', function(){
+		var value = $(this).val();
+		var jstr = JSON.stringify({
+			header: 'action',
+			action: 'discard',
+			value: value,
+		});
+		console.log(jstr);
+		ws.send(jstr);
+	});
 }
 
 ws.onmessage = function (event) {
@@ -72,9 +115,10 @@ ws.onmessage = function (event) {
 				wrap('td', p.user.name)
 			+ 	wrap('td', p.cash)
 			+ 	wrap('td', p.hand.length)
-			+ 	discard(p.discard));
+			+ 	discard(p.discardPile));
 	});
 	$('#players').html(players_html);
+	setup_listeners();
 };
 
 $('#draw').on('click', function(){
