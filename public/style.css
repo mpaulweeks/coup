@@ -34,12 +34,6 @@
 .bordered-left{
 	border-left: 1px solid #eee;
 }
-.price-left{
-	margin-left: 9px;
-}
-.price-middle{
-	margin-left: 20px;
-}
 .admin{
 	color: red;
 }

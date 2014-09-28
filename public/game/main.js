@@ -46,7 +46,7 @@ function updateHand(hand){
 				wrap('div', card.name, 'card-in-hand col-md-6 ' + typeClass) +
 				wrap('div',
 					button('reveal', card.type, 'Reveal')
-				+ 	button('shuffle', card.type, 'Shuffle into deck')
+				+ 	button('shuffle', card.type, 'Shuffle')
 				+ 	button('discard', card.type, 'Discard'), 'col-md-6');
 			out += wrap('div', c_html, 'row');
 		});
@@ -99,6 +99,10 @@ function setup_listeners(){
 		});
 		console.log(jstr);
 		ws.send(jstr);
+	});
+
+	$(".btn").mouseup(function(){
+	    $(this).blur();
 	});
 }
 

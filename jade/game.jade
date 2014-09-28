@@ -3,10 +3,12 @@ html
 		title=('COUP - ' + name)
 		script(src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js')
 		script(src='//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js')
+		link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
+		
 		script(src='/redirect.js')
 		script(src='/game/main.js')
-		link(rel="stylesheet", href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css")
 		link(rel='stylesheet', href='/style.css')
+		
 		meta(name="viewport", content="width=device-width, initial-scale=1")
 	body
 		div.container
@@ -37,10 +39,11 @@ html
 			div.row.text-center
 				div.col-md-4
 					h3 Cash
-					button.btn.btn-default.cash-add.price-left(value='-7') -7
+					button.btn.btn-default.cash-add(value='-7') -7
 					button.btn.btn-default.cash-add(value='-3') -3
+					button.btn.btn-default.cash-add(value='-2') -2
 					button.btn.btn-default.cash-add(value='-1') -1
-					button.btn.btn-default.cash-add.price-middle(value='1') +1
+					button.btn.btn-default.cash-add(value='1') +1
 					button.btn.btn-default.cash-add(value='2') +2
 					button.btn.btn-default.cash-add(value='3') +3
 				div.col-md-8.bordered-left
@@ -74,6 +77,16 @@ html
 						td Coup
 						td -7 Cash, force a player to discard
 						td
+					tr.card-type-5.special-action
+						td Duke
+						td Tax
+						td +3 Cash
+						td Block: Foreign Aid
+					tr.card-type-3.special-action
+						td Captain
+						td Steal
+						td +2 Cash, someone else -2 Cash
+						td Block: Steal
 					tr.card-type-1.special-action
 						td Ambassador
 						td Exchange
@@ -84,21 +97,11 @@ html
 						td Assassinate
 						td -3 Cash, force a player to discard
 						td
-					tr.card-type-3.special-action
-						td Captain
-						td Steal
-						td +2 Cash, someone else -2 Cash
-						td Block: Steal
 					tr.card-type-4.special-action
 						td Contessa
 						td 
 						td 
 						td Block: Assassinate
-					tr.card-type-5.special-action
-						td Duke
-						td Tax
-						td +3 Cash
-						td Block: Foreign Aid
 			h3 Log
 			div#log
 
